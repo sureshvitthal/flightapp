@@ -1,0 +1,172 @@
+<!-- Book form -->
+<div class="b-container b-container__results" id="results-container" main-dom="">
+
+
+  <!-- Page Loader -->
+  <loader></loader>
+  
+
+  <div class="b-results">
+        <h1 class="b-title b-title__on-dark line-under" ng-show="result1 && result2">Results to: {{result1}} - {{result2}}</h1>
+
+        <div class="b-edit-search">
+
+                <div class="b-search">
+
+                  <div class="f-input-group f-input-group__radio text-center" ng-init="flightway = 'roundtrip'">
+                      <label class="radio">
+                          <input id="roundtrip" type="radio" name="flightway" ng-model="flightway" value="roundtrip">
+                          <span class="outer"><span class="inner"></span></span>
+                          Round-Trip
+                      </label>
+                      <label class="radio">
+                          <input id="oneway" type="radio" name="flightway" ng-model="flightway" value="oneway">
+                          <span class="outer"><span class="inner"></span></span>
+                          One-Way
+                      </label>
+                  </div>
+
+                  <!-- Search box -->
+                  <div class="r-search-box">
+
+                      <!-- Search form -->
+                      <form class="b-search-box_form" id="js-form" name="flight-form">
+
+                          <div class="f-input-group">
+                              <div class="f-input-group">
+                                  <label for="flight-from" class="f-label">Leaving from</label>
+                                  <input type="text" name="flight-from"
+                                  id="flight-from" ng-autocomplete ng-model="result1" details="details1" options="options1"
+                                   class="f-input f-input__plane-right" placeholder="Origin">
+                              </div>
+
+                              <div class="f-input-group">
+                                  <label for="flight-to" class="f-label">Going to</label>
+                                  <input type="text" name="flight-to"
+                                  id="flight-to" ng-autocomplete ng-model="result2" details="details2" options="options2"
+                                  class="f-input f-input__plane-left" placeholder="Destination">
+                              </div>
+                          </div>
+
+                          <div class="f-input-group">
+                              <div class="f-input-group">
+                                  <label for="f-check-in" class="f-label">Departure</label>
+                                  <input type="text" name="f-check-in" id="f-check-in" class="f-input f-input__calendar js-datepicker" placeholder="Depart Date">
+                              </div>
+                              <div class="f-input-group" ng-show="flightway == 'roundtrip'">
+                                  <label for="f-check-out" class="f-label">Return</label>
+                              <input type="text" name="f-check-out" id="f-check-out" class="f-input f-input__calendar js-datepicker" placeholder="Return Date">
+                              </div>
+                          </div>
+
+                          <div class="f-input-group">
+                              <div class="f-input-group">
+                                  <label for="f-destination" class="f-label">Passangers</label>
+                                  <div class="f-select-group">
+                                      <div class="f-select-info">Select</div>
+                                      <select name="f-adults" id="f-adults">
+                                          <option value="1">1</option>
+                                          <option value="2">2</option>
+                                          <option value="3">3</option>
+                                          <option value="4">4</option>
+                                          <option value="5">5</option>
+                                          <option value="6">6</option>
+                                          <option value="7">7</option>
+                                          <option value="8">8</option>
+                                          <option value="9">9</option>
+                                      </select>
+                                  </div>
+                              </div>
+                          </div>
+
+
+                          <div class="f-edit-search-range-group">
+                              <div class="f-edit-search-title">Price</div>
+                              <input type="text" name="price-amount" ng-model="picerange" class="f-input-amount" id="js-price-amount" readonly>
+                              <div id="js-price-range"></div>
+                          </div>
+
+                          <button type="submit" class="search-btn" ng-show="flightway == 'roundtrip'" ng-click="getReturnFlights()">Search Round-Trip</button>
+                          <button type="submit" class="search-btn" ng-show="flightway == 'oneway'" ng-click="getSingleFlights()">Search One-Way</button>
+
+                      </form>
+                  </div>
+
+                </div>
+
+            <div class="b-edit-search-text">
+               
+            </div>
+        </div>
+
+
+
+        <!-- flights result  -->
+        <div class="b-results-flights">
+            <!-- return flights -->
+            <div class="b-results-flights_list" ng-show="error !== true && cityData.returnflights !== null">
+
+                <div class="b-flight_item" ng-repeat="flight in cityData.returnflights.data">
+                    <div class="b-flight_info-wrapper">
+                        <div class="b-flight_price">
+                            <div class="b-flight_price__text">1 person</div>
+                            <div class="b-flight_price__total">{{flight.price}} <span class="b-flight_price__currency">Rs.</span></div>
+                            <div class="book_now"><a href="#" class="book_now__button">Book Now</a></div>
+                        </div>
+                        <div class="b-flight_info__half">
+                            <div class="b-flight_info__title flight_code">{{flight.returnflight.flight1.flight}}</div>
+                            <div class="b-flight_info__title">{{flight.returnflight.flight1.city | shortname}} > {{flight.returnflight.flight2.city | shortname}}</div>
+                            <div class="b-flight_info__text flight_time">
+                                Depart: {{flight.returnflight.flight1.arrivalTime | dateMilliseconds:"medium"}} <br>
+                                Arrive: {{flight.returnflight.flight1.departureTime | dateMilliseconds:"medium"}}
+                            </div>
+                        </div>
+                        <div class="b-flight_info__half">
+                            <div class="b-flight_info__title flight_code">{{flight.returnflight.flight2.flight}}</div>
+                            <div class="b-flight_info__title">{{flight.returnflight.flight2.city | shortname}} > {{flight.returnflight.flight1.city | shortname}}</div>
+                            <div class="b-flight_info__text flight_time">
+                                Depart: {{flight.returnflight.flight2.arrivalTime | dateMilliseconds:"medium"}} <br>
+                                Arrive: {{flight.returnflight.flight2.departureTime | dateMilliseconds:"medium"}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="b-flight_image">
+                        <img ng-src="{{flight.picture}}" alt="{{flight._id}}">
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- one way flights -->
+            <div class="b-results-flights_list" ng-show="error !== true && cityData.singleflights !== null">
+
+                <div class="b-flight_item" ng-repeat="flight in cityData.singleflights.data">
+                    <div class="b-flight_info-wrapper">
+                        <div class="b-flight_price">
+                            <div class="b-flight_price__text">1 person</div>
+                            <div class="b-flight_price__total">{{flight.price}} <span class="b-flight_price__currency">Rs.</span></div>
+                            <div class="book_now"><a href="#" class="book_now__button">Book Now</a></div>
+                        </div>
+                        <div class="b-flight_info__full">
+                            <div class="b-flight_info__title flight_code">{{flight.singleflight.flight}}</div>
+                            <div class="b-flight_info__title">{{flight.singleflight.city | shortname}} > {{flight.singleflight.city | shortname}}</div>
+                            <div class="b-flight_info__text flight_time">
+                                Depart: {{flight.singleflight.arrivalTime | dateMilliseconds:"medium"}} <br>
+                                Arrive: {{flight.singleflight.departureTime | dateMilliseconds:"medium"}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="b-flight_image">
+                        <img ng-src="{{flight.picture}}" alt="{{flight._id}}">
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
